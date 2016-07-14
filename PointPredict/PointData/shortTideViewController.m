@@ -50,6 +50,8 @@
     NSUInteger *_indexOfSymbol;
     
     UILabel *detail;
+    
+    UILabel *releaseTime;
 }
 
 
@@ -221,8 +223,9 @@
 //        [self setMapView:_title];
         [self judgePoint:_point];
         [self.shortTideTable reloadData];
-        NSArray *dateArray1 = [self getDataFromNet:_title];
-        [self setXY:dateArray1];
+        [self getDataFromNet:_title];
+        //NSArray *dateArray1 = [self getDataFromNet:_title];
+        //[self setXY:dateArray1];
         detail.text = @" ";
         _indexOfSymbol = 200;
         [graph reloadData];
@@ -387,31 +390,22 @@
         
         NSMutableArray *dateArray = [[NSMutableArray alloc] init];
         NSMutableArray *windHighArray = [[NSMutableArray alloc] init];
-//        for (NSDictionary *dic in array) {
-//            
-//            dataAnaly *data = [[dataAnaly alloc] init];
-//            NSString *dateString1 = [dic objectForKey:@"dataTime"];
-//            NSString *dateString = [data stringForAnaly:dateString1];
-//            NSNumber *windhigh1 = [dic objectForKey:@"POWER"];
-//            CGFloat windhigh2 = [windhigh1 doubleValue];
-//            NSString *windhigh = [NSString stringWithFormat:@"%.2f",windhigh2];
-//      
-//            //将获取到的数据放入数组中，以方便每行数据的展示
-//            [dateArray addObject:dateString];
-//            [windHighArray addObject:windhigh];
-//        }
+
         
-        NSString *pubtime = [array[0] objectForKey:@"PUBLISHTIME"];
+        NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+        NSString *pubtime2=[pubtime substringToIndex:16];
+        releaseTime.text=[NSString stringWithFormat:@"发布时间:%@",pubtime2];
+        
         NSString *pubtime1 = [pubtime substringToIndex:10];
         for (int i = 0; i<array.count; i++) {
-            NSString *publishtime = [array[i] objectForKey:@"PUBLISHTIME"];
+            NSString *publishtime = [array[i] objectForKey:@"publishtime"];
             NSString *publishtime1 = [publishtime substringToIndex:10];
             if ([publishtime1 isEqualToString:pubtime1]) {
                 
                 dataAnaly *data = [[dataAnaly alloc] init];
-                NSString *dateString1 = [array[i] objectForKey:@"dataTime"];
+                NSString *dateString1 = [array[i] objectForKey:@"datatime"];
                 NSString *dateString = [data stringForAnaly:dateString1];
-                NSNumber *windhigh1 = [array[i] objectForKey:@"POWER"];
+                NSNumber *windhigh1 = [array[i] objectForKey:@"power"];
                 CGFloat windhigh2 = [windhigh1 doubleValue];
                 NSString *windhigh = [NSString stringWithFormat:@"%.2f",windhigh2];
                 
@@ -479,13 +473,13 @@
     [self.view addSubview:_hostView];
     
     //设置留白
-    graph.paddingLeft = 0;
-    graph.paddingTop = 10;
-    graph.paddingRight = 0;
-    graph.paddingBottom = 20;
+    graph.paddingLeft = 3;
+    graph.paddingTop = 20;
+    graph.paddingRight = 3;
+    graph.paddingBottom = 10;
     
     graph.plotAreaFrame.paddingLeft = 30.0;
-    graph.plotAreaFrame.paddingTop = 10.0;
+    graph.plotAreaFrame.paddingTop = 20.0;
     graph.plotAreaFrame.paddingRight = 5.0;
     graph.plotAreaFrame.paddingBottom = 20.0;
     //设置坐标范围
@@ -505,7 +499,7 @@
     _shortTideTable.layer.masksToBounds = YES;
     _shortTideTable.alpha = 0.6;
     [_shortTideTable setDelegate:self];
-    _shortTideTable.backgroundColor = [UIColor redColor];
+    _shortTideTable.backgroundColor = [UIColor clearColor];
     
     [_shortTideTable setDataSource:self];
     [self.view addSubview:_shortTideTable];
@@ -612,13 +606,13 @@
     y.minorTickLineStyle = nil;
     //大刻度线间距：50单位
     
-    y.majorIntervalLength = @(0.5);
+    y.majorIntervalLength = @(1);
     y.orthogonalPosition = @(-2.0);
-    y.titleLocation = @(100.f);
-    y.titleOffset = 30.f;
+    y.titleLocation = @(3.3);
+    y.titleOffset = 0.f;
     //坐标原点：0
-    
-    y.title= @"数值";
+    y.titleRotation=2*M_PI;
+    y.title= @"m";
 //        y.labelingPolicy = CPTAxisLabelingPolicyNone;
     //固定XY轴的显示位置，使其不随屏幕的滑动而移动
     axisSet.yAxis.axisConstraints = [CPTConstraints constraintWithRelativeOffset:0.0];
@@ -663,38 +657,33 @@
     
     
     NSMutableArray *array = [NSJSONSerialization JSONObjectWithData:received options:NSJSONReadingMutableContainers error:nil];
+    NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+    //NSString *pubtime2=[pubtime substringToIndex:16];
+    //releaseTime.text=[NSString stringWithFormat:@"发布时间:%@",pubtime2];
+    
     [_datetimeArray removeAllObjects];
     [_valueArray removeAllObjects];
     [_dataJQ removeAllObjects];
     
-//    for (NSDictionary *dic in array) {
-//        
-//        
-//        NSString *dateString1 = [dic objectForKey:@"dataTime"];
-//        NSString *dateString = [_datAnaly stringForAnaly:dateString1];
-//        NSNumber *windspeed = [dic objectForKey:@"POWER"];
-//        
-//        
-//        [_datetimeArray addObject:dateString];
-//        [_valueArray addObject:windspeed];
-//        [datasForPlot addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:dateString,@"date",windspeed,@"speed", nil]];
-//    }
     
-    NSString *pubtime = [array[0] objectForKey:@"PUBLISHTIME"];
+//    NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+//    NSString *pubtime2=[pubtime substringToIndex:16];
+    //releaseTime.text=@"123";
+    //[NSString stringWithFormat:@"发布时间:%@",pubtime2];
     NSString *pubtime1 = [pubtime substringToIndex:10];
     _publishTime = pubtime1;
     for (int i = 0; i<array.count; i++) {
-        NSString *publishtime = [array[i] objectForKey:@"PUBLISHTIME"];
+        NSString *publishtime = [array[i] objectForKey:@"publishtime"];
         NSString *publishtime1 = [publishtime substringToIndex:10];
         if ([publishtime1 isEqualToString:pubtime1]) {
            
-            NSString *dateString1 = [array[i] objectForKey:@"dataTime"];
+            NSString *dateString1 = [array[i] objectForKey:@"datatime"];
             NSString *jiequ = [dateString1 substringToIndex:10];
             if ([jiequ isEqualToString:publishtime1]) {
                 [_similarLength addObject:jiequ];
             }
             NSString *dateString = [_datAnaly stringForAnaly:dateString1];
-            NSNumber *windspeed = [array[i] objectForKey:@"POWER"];
+            NSNumber *windspeed = [array[i] objectForKey:@"power"];
             
             
             [_datetimeArray addObject:dateString];
@@ -751,8 +740,8 @@
     logo.image=[UIImage imageNamed:@"LOGO.png"];
     [self.view addSubview:logo];
     
-    UILabel *releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.2 , 200, 100)];
-    releaseTime.text = @"发布时间:2015-11-16 09:00";
+    releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.2 , 200, 100)];
+    //releaseTime.text = @"发布时间:2015-11-16 09:00";
     releaseTime.font = [UIFont fontWithName:@"TimesNewRomanPS-ItalicMT" size:14];
     [self.view addSubview:releaseTime];
     

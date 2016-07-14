@@ -20,8 +20,12 @@
 @property(nonatomic,retain)AppDelegate* myAppDelegate;
 @property(strong,nonatomic)UIImageView *imageView;
 
+@property(strong,nonatomic)UITextField *name;
+
 @property (retain,nonatomic) id <locationDelegate> delegate;
 - (BOOL) connectedToNetwork;
+
+@property(strong,nonatomic)NSArray *array;
 
 @end
 

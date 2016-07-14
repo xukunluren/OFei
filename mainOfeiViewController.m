@@ -122,6 +122,7 @@
 
 - (void)tapOnButton:(UIButton *)button {
     
+    
     if (button.tag==0) {
         
         button.tintColor = [UIColor whiteColor];

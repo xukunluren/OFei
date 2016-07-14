@@ -51,6 +51,8 @@ static NSString * const PASSWORD = @"56637190";
     NSString *_biaozhi;
     NSString *_dateinfo;
     
+    
+    NormalViewController *normal;
 }
 
 #pragma mark - 视图将要出现
@@ -66,6 +68,7 @@ static NSString * const PASSWORD = @"56637190";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.mydelegate =(AppDelegate *)[[UIApplication sharedApplication]delegate];
+    normal=[[NormalViewController alloc]init];
     _nameArray = [[NSMutableArray alloc] init];
     _dateArray = [[NSMutableArray alloc] init];
     _numberArray =[[NSMutableArray alloc] init];
@@ -147,7 +150,7 @@ static NSString * const PASSWORD = @"56637190";
 
 -(void)selectWarm
 {
-    [PellTableViewSelect addPellTableViewSelectWithWindowFrame:CGRectMake(KWight*0.5-67.5, 64, 150, 150) selectData:@[@"海浪预警",@"风暴潮预警",@"大风预警"] action:^(NSInteger index) {
+    [PellTableViewSelect addPellTableViewSelectWithWindowFrame:CGRectMake(KWight*0.5-67.5, 64, 150, 120) selectData:@[@"海浪预警",@"风暴潮预警"] action:^(NSInteger index) {
         NSLog(@"您选择了%ld",(long)index);
         if (index == 0) {
             _title = @"海浪预警";
@@ -155,9 +158,9 @@ static NSString * const PASSWORD = @"56637190";
         if (index == 1) {
             _title = @"风暴潮预警";
         }
-        if (index == 2) {
-            _title = @"大风预警";
-        }
+//        if (index == 2) {
+//            _title = @"大风预警";
+//        }
         
         [self viewDidAppear:YES];
         NSLog(@"%@",_title);
@@ -337,6 +340,7 @@ static NSString * const PASSWORD = @"56637190";
         notification.timeZone = [NSTimeZone defaultTimeZone];
         // 设置重复间隔
         notification.repeatInterval = kCFCalendarUnitDay;
+
         // 推送声音
         notification.soundName = UILocalNotificationDefaultSoundName;
         // 推送内容
@@ -345,8 +349,8 @@ static NSString * const PASSWORD = @"56637190";
         notification.alertLaunchImage=[[NSBundle mainBundle] pathForResource:@"Icon-Small" ofType:@"png"];
         // 显示在icon上的红色圈中的数子
         //        _badgeNumber++;
-        //        [UIApplication sharedApplication].applicationIconBadgeNumber = _badgeNumber;
-        
+//        [UIApplication sharedApplication].applicationIconBadgeNumber = _badgeNumber;
+//        
 //        NSDictionary *info = [NSDictionary dictionaryWithObject:objectName forKey:keyGUID];
 //        notification.userInfo = info;
         // 添加推送到UIApplication
@@ -484,10 +488,9 @@ static NSString * const PASSWORD = @"56637190";
 
 -(void)back{
     
-    //    NormalViewController *normal = [[NormalViewController alloc]init];
-    [self.navigationController popViewControllerAnimated:YES];
-    //    [self presentViewController:normal animated:YES completion:nil];
-    
+    normal.dotImage.hidden=NO;
+    [self.navigationController popViewControllerAnimated:YES ];
+
 }
 
 
@@ -607,13 +610,13 @@ static NSString * const PASSWORD = @"56637190";
     CGContextStrokeRect(context, CGRectMake(0, self.view.frame.size.height - 1, self.view.frame.size.width, 1));
 }
 
+
+//hidden
 - (void)viewWillDisappear:(BOOL)animated
 {
+    
     self.tabBarController.tabBar.hidden = NO;
-    
-    
-    
-    
+    normal.dotImage.hidden=YES;
 }
 
 

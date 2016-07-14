@@ -132,9 +132,9 @@
         for (NSDictionary *dic in array) {
             
             
-            NSString *dateString1 = [dic objectForKey:@"dataTime"];
+            NSString *dateString1 = [dic objectForKey:@"datatime"];
             
-            NSNumber *windspeed = [dic objectForKey:@"POWER"];
+            NSNumber *windspeed = [dic objectForKey:@"power"];
             
             [_tideTimeArr addObject:dateString1];
             [_tideValueArr addObject:windspeed];

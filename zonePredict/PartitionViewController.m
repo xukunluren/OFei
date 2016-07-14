@@ -26,6 +26,11 @@
     
     UILabel *_titleLabel;
     UIImageView *_zoneA;
+   
+    zoneA *view ;
+    
+    UILabel *releaseTime;
+    
 }
 @property(nonatomic,strong)UISwipeGestureRecognizer *leftSwipeGestureRecognizer;
 @property(nonatomic,strong)UISwipeGestureRecognizer *rightSwipeGestureRecognizer;
@@ -89,6 +94,8 @@
     [self setButton];
 //    [self setNavTitle:title];
 //    [self changeView];
+    
+    
    }
 -(void)setNoFresh
 {
@@ -103,8 +110,9 @@
     logo.image=[UIImage imageNamed:@"LOGO.png"];
     [self.view addSubview:logo];
     
-    UILabel *releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.25 , 200, 100)];
-    releaseTime.text = @"发布时间:2015-11-16 09:00";
+    releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.25 , 200, 100)];
+    [self releaseTime];
+    
     releaseTime.font = [UIFont fontWithName:@"TimesNewRomanPS-ItalicMT" size:14];
     [self.view addSubview:releaseTime];
     
@@ -117,12 +125,29 @@
     [self.view addSubview:_zoneA];
 }
 
+-(void)releaseTime{
+    NSURL *url=[NSURL URLWithString:urlZoneA24];
+    
+    NSURLRequest *requst = [NSURLRequest requestWithURL:url ];
+
+    NSOperationQueue *queue=[NSOperationQueue mainQueue];
+    [NSURLConnection sendAsynchronousRequest:requst queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+         NSMutableArray *rootDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        NSString *pubtime=[rootDic[0] objectForKey:@"publishtime"];
+        NSString *pubtime1=[pubtime substringToIndex:16];
+        
+        releaseTime.text=[NSString stringWithFormat:@"发布时间:%@",pubtime1];
+    }];
+    
+}
+
 - (void)createPages:(NSInteger)pages {
     for (int i = 0; i < pages; i++) {
         
         if (i == 0) {
-            zoneA *view = [[zoneA alloc]initWithFrame:CGRectMake(CGRectGetWidth(self.scrollView.bounds) * i, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+            view = [[zoneA alloc]initWithFrame:CGRectMake(CGRectGetWidth(self.scrollView.bounds) * i, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
             view.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:0.0];
+            
             [_scrollView addSubview:view];
 //            self.navigationController.title = @"A";
 //            [self setNavTitle:@"A"];
@@ -370,6 +395,8 @@
     }
     return level;
 }
+
+
 
 
 

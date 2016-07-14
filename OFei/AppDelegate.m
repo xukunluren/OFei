@@ -10,6 +10,9 @@
 #import "Reachability.h"
 #import "CCLocationManager.h"
 #import <CoreLocation/CoreLocation.h>
+#import "HRAccountTool.h"
+#import "ViewController.h"
+#import "normal/NormalViewController.h"
 
 
 @interface AppDelegate ()
@@ -23,6 +26,19 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+     NormalViewController  *normal = [[NormalViewController alloc] initWithNibName:nil bundle:nil];
+    
+    UINavigationController *normalView = [[UINavigationController alloc] initWithRootViewController:normal];
+    
+
+    // 先判断有无存储账号信息
+    if ([HRAccountTool getUserName] == NULL ) { // 之前没有登录成功
+        self.window.rootViewController = [[ViewController alloc] init];
+    } else {// 之前登录成功
+        self.window.rootViewController= normalView;
+    }
+    
     
   [self.window makeKeyAndVisible];
 //    [XGPush startApp:2200171200 appKey:@"IYB7B8Z7V56D"];
@@ -60,7 +76,6 @@
     [reach startNotifier]; //开始监听,会启动一个run loop
     [self updateInterfaceWithReachability: reach];
     
-   
 
     return YES;
 }

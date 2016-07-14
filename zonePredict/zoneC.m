@@ -275,12 +275,15 @@
         // 解析
         NSMutableArray *rootDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         
-        NSNumber *waveavg = [rootDic[0] objectForKey:@"POWER"];
-        NSNumber *minwave = [rootDic[1] objectForKey:@"POWER"];
-        NSNumber *maxwave = [rootDic[2] objectForKey:@"POWER"];
+        NSString *date=[rootDic[0] objectForKey:@"publishtime"];
+        NSString *pubtime=[date substringToIndex:16];
+        //        _releaseTime.text=[NSString stringWithFormat:@"发布时间:%@",pubtime];
+        NSNumber *waveavg = [rootDic[0] objectForKey:@"power"];
+        NSNumber *minwave = [rootDic[1] objectForKey:@"power"];
+        NSNumber *maxwave = [rootDic[2] objectForKey:@"power"];
         CGFloat wavemin = [minwave doubleValue];
         CGFloat wavemax = [maxwave doubleValue];
-        NSString *dirwave = [rootDic[1] objectForKey:@"DIR"];
+        NSString *dirwave = [rootDic[1] objectForKey:@"dir"];
         const char *wavechars = [dirwave cStringUsingEncoding:NSUTF8StringEncoding];
         NSString *wavenew;
         NSString *wavenew2;
@@ -302,42 +305,44 @@
             NSLog(@"%@",wavearr[0]);
             _waveDirection.text = [NSString stringWithFormat:@"%@",wavearr[0]];
         }
-        
-        
-        NSNumber *avgwind = [rootDic[3] objectForKey:@"POWER"];
-        NSNumber *minwind = [rootDic[4] objectForKey:@"POWER"];
-        NSString *minlevel = [self level:minwind];
-        NSString *dirwind = [rootDic[4] objectForKey:@"DIR"];
-        const char *windchars = [dirwind cStringUsingEncoding:NSUTF8StringEncoding];
-        NSString *windnew;
-        NSString *windnew2;
-        NSMutableArray *windarr = [[NSMutableArray alloc]init];
-        int windlen = strlen(windchars);
-        for (int i = 0; i < windlen; i++) {
-            windnew = [NSString stringWithFormat:@"%c",windchars[i]];
-            windnew2 = [self word:windnew];
-            [windarr addObject:windnew2];
-        }
-        NSLog(@"%d",windlen);
-        if (windlen == 3) {
-            NSLog(@"%@%@偏%@",windarr[2],windarr[1],windarr[0]);
-            _windDirection.text = [NSString stringWithFormat:@"%@%@偏%@",windarr[2],windarr[1],windarr[0]];
-        }else if(windlen == 2){
-            NSLog(@"%@偏%@",windarr[1],windarr[0]);
-            _windDirection.text = [NSString stringWithFormat:@"%@偏%@",windarr[1],windarr[0]];
-        }else if (windlen == 1){
-            NSLog(@"%@",windarr[0]);
-            _windDirection.text = [NSString stringWithFormat:@"%@",windarr[0]];
-        }
-        
-        
-        _wind.text = minlevel;
-        //        _windDirection.text = dirwind;
-        //        _windAvg.text = [NSString stringWithFormat:@"%@",avgwind];
-        
         _wave.text = [NSString stringWithFormat:@"%.2f-%.2fm",wavemin,wavemax];
-        //        _waveAvg.text = [NSString stringWithFormat:@"%@m",waveavg];
-        //        _waveDirection.text = dirwave;
+        
+        
+        if(rootDic.count>4){
+            NSNumber *avgwind = [rootDic[3] objectForKey:@"power"];
+            NSNumber *minwind = [rootDic[4] objectForKey:@"power"];
+            NSString *minlevel = [self level:minwind];
+            NSString *dirwind = [rootDic[4] objectForKey:@"dir"];
+            const char *windchars = [dirwind cStringUsingEncoding:NSUTF8StringEncoding];
+            NSString *windnew;
+            NSString *windnew2;
+            NSMutableArray *windarr = [[NSMutableArray alloc]init];
+            int windlen = strlen(windchars);
+            for (int i = 0; i < windlen; i++) {
+                windnew = [NSString stringWithFormat:@"%c",windchars[i]];
+                windnew2 = [self word:windnew];
+                [windarr addObject:windnew2];
+            }
+            NSLog(@"%d",windlen);
+            if (windlen == 3) {
+                NSLog(@"%@%@偏%@",windarr[2],windarr[1],windarr[0]);
+                _windDirection.text = [NSString stringWithFormat:@"%@%@偏%@",windarr[2],windarr[1],windarr[0]];
+            }else if(windlen == 2){
+                NSLog(@"%@偏%@",windarr[1],windarr[0]);
+                _windDirection.text = [NSString stringWithFormat:@"%@偏%@",windarr[1],windarr[0]];
+            }else if (windlen == 1){
+                NSLog(@"%@",windarr[0]);
+                _windDirection.text = [NSString stringWithFormat:@"%@",windarr[0]];
+            }
+            
+            
+            _wind.text = minlevel;
+            
+        }else{
+            _windDirection_72.text=@" ";
+            _wind_72.text=@" ";
+            
+        }
         
     }];
     
@@ -346,12 +351,12 @@
     [NSURLConnection sendAsynchronousRequest:requst_48 queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         // 解析
         NSMutableArray *rootDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        NSNumber *waveavg = [rootDic[0] objectForKey:@"POWER"];
-        NSNumber *minwave = [rootDic[1] objectForKey:@"POWER"];
-        NSNumber *maxwave = [rootDic[2] objectForKey:@"POWER"];
+        NSNumber *waveavg = [rootDic[0] objectForKey:@"power"];
+        NSNumber *minwave = [rootDic[1] objectForKey:@"power"];
+        NSNumber *maxwave = [rootDic[2] objectForKey:@"power"];
         CGFloat wavemin = [minwave doubleValue];
         CGFloat wavemax = [maxwave doubleValue];
-        NSString *dirwave = [rootDic[1] objectForKey:@"DIR"];
+        NSString *dirwave = [rootDic[1] objectForKey:@"dir"];
         const char *wavechars = [dirwave cStringUsingEncoding:NSUTF8StringEncoding];
         NSString *wavenew;
         NSString *wavenew2;
@@ -373,42 +378,44 @@
             NSLog(@"%@",wavearr[0]);
             _waveDirection_48.text = [NSString stringWithFormat:@"%@",wavearr[0]];
         }
-        
-        
-        NSNumber *avgwind = [rootDic[3] objectForKey:@"POWER"];
-        NSNumber *minwind = [rootDic[4] objectForKey:@"POWER"];
-        NSString *minlevel = [self level:minwind];
-        NSString *dirwind = [rootDic[4] objectForKey:@"DIR"];
-        const char *windchars = [dirwind cStringUsingEncoding:NSUTF8StringEncoding];
-        NSString *windnew;
-        NSString *windnew2;
-        NSMutableArray *windarr = [[NSMutableArray alloc]init];
-        int windlen = strlen(windchars);
-        for (int i = 0; i < windlen; i++) {
-            windnew = [NSString stringWithFormat:@"%c",windchars[i]];
-            windnew2 = [self word:windnew];
-            [windarr addObject:windnew2];
-        }
-        NSLog(@"%d",windlen);
-        if (windlen == 3) {
-            NSLog(@"%@%@偏%@",windarr[2],windarr[1],windarr[0]);
-            _windDirection_48.text = [NSString stringWithFormat:@"%@%@偏%@",windarr[2],windarr[1],windarr[0]];
-        }else if(windlen == 2){
-            NSLog(@"%@偏%@",windarr[1],windarr[0]);
-            _windDirection_48.text = [NSString stringWithFormat:@"%@偏%@",windarr[1],windarr[0]];
-        }else if (windlen == 1){
-            NSLog(@"%@",windarr[0]);
-            _windDirection_48.text = [NSString stringWithFormat:@"%@",windarr[0]];
-        }
-        
-        
-        _wind_48.text = minlevel;
-        //        _windDirection_48.text = dirwind;
-        //        _windAvg_48.text = [NSString stringWithFormat:@"%@",avgwind];
-        
         _wave_48.text = [NSString stringWithFormat:@"%.2f-%.2fm",wavemin,wavemax];
-        //        _waveAvg_48.text = [NSString stringWithFormat:@"%@m",waveavg];
-        //        _waveDirection_48.text = dirwave;
+        
+        
+        if (rootDic.count>4) {
+            
+            NSNumber *avgwind = [rootDic[3] objectForKey:@"power"];
+            NSNumber *minwind = [rootDic[4] objectForKey:@"power"];
+            NSString *minlevel = [self level:minwind];
+            NSString *dirwind = [rootDic[4] objectForKey:@"dir"];
+            const char *windchars = [dirwind cStringUsingEncoding:NSUTF8StringEncoding];
+            NSString *windnew;
+            NSString *windnew2;
+            NSMutableArray *windarr = [[NSMutableArray alloc]init];
+            int windlen = strlen(windchars);
+            for (int i = 0; i < windlen; i++) {
+                windnew = [NSString stringWithFormat:@"%c",windchars[i]];
+                windnew2 = [self word:windnew];
+                [windarr addObject:windnew2];
+            }
+            NSLog(@"%d",windlen);
+            if (windlen == 3) {
+                NSLog(@"%@%@偏%@",windarr[2],windarr[1],windarr[0]);
+                _windDirection_48.text = [NSString stringWithFormat:@"%@%@偏%@",windarr[2],windarr[1],windarr[0]];
+            }else if(windlen == 2){
+                NSLog(@"%@偏%@",windarr[1],windarr[0]);
+                _windDirection_48.text = [NSString stringWithFormat:@"%@偏%@",windarr[1],windarr[0]];
+            }else if (windlen == 1){
+                NSLog(@"%@",windarr[0]);
+                _windDirection_48.text = [NSString stringWithFormat:@"%@",windarr[0]];
+            }
+            
+            
+            _wind_48.text = minlevel;
+            
+        }else{
+            _windDirection_72.text=@" ";
+            _wind_72.text=@" ";
+        }
         
         
     }];
@@ -418,12 +425,12 @@
     [NSURLConnection sendAsynchronousRequest:requst_72 queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         // 解析
         NSMutableArray *rootDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        NSNumber *waveavg = [rootDic[0] objectForKey:@"POWER"];
-        NSNumber *minwave = [rootDic[1] objectForKey:@"POWER"];
-        NSNumber *maxwave = [rootDic[2] objectForKey:@"POWER"];
+        NSNumber *waveavg = [rootDic[0] objectForKey:@"power"];
+        NSNumber *minwave = [rootDic[1] objectForKey:@"power"];
+        NSNumber *maxwave = [rootDic[2] objectForKey:@"power"];
         CGFloat wavemin = [minwave doubleValue];
         CGFloat wavemax = [maxwave doubleValue];
-        NSString *dirwave = [rootDic[1] objectForKey:@"DIR"];
+        NSString *dirwave = [rootDic[1] objectForKey:@"dir"];
         const char *wavechars = [dirwave cStringUsingEncoding:NSUTF8StringEncoding];
         NSString *wavenew;
         NSString *wavenew2;
@@ -445,42 +452,47 @@
             NSLog(@"%@",wavearr[0]);
             _waveDirection_72.text = [NSString stringWithFormat:@"%@",wavearr[0]];
         }
-        
-        
-        NSNumber *avgwind = [rootDic[3] objectForKey:@"POWER"];
-        NSNumber *minwind = [rootDic[4] objectForKey:@"POWER"];
-        NSString *minlevel = [self level:minwind];
-        NSString *dirwind = [rootDic[4] objectForKey:@"DIR"];
-        const char *windchars = [dirwind cStringUsingEncoding:NSUTF8StringEncoding];
-        NSString *windnew;
-        NSString *windnew2;
-        NSMutableArray *windarr = [[NSMutableArray alloc]init];
-        int windlen = strlen(windchars);
-        for (int i = 0; i < windlen; i++) {
-            windnew = [NSString stringWithFormat:@"%c",windchars[i]];
-            windnew2 = [self word:windnew];
-            [windarr addObject:windnew2];
-        }
-        NSLog(@"%d",windlen);
-        if (windlen == 3) {
-            NSLog(@"%@%@偏%@",windarr[2],windarr[1],windarr[0]);
-            _windDirection_72.text = [NSString stringWithFormat:@"%@%@偏%@",windarr[2],windarr[1],windarr[0]];
-        }else if(windlen == 2){
-            NSLog(@"%@偏%@",windarr[1],windarr[0]);
-            _windDirection_72.text = [NSString stringWithFormat:@"%@偏%@",windarr[1],windarr[0]];
-        }else if (windlen == 1){
-            NSLog(@"%@",windarr[0]);
-            _windDirection_72.text = [NSString stringWithFormat:@"%@",windarr[0]];
-        }
-        
-        
-        _wind_72.text = minlevel;
-        //        _windDirection_72.text = dirwind;
-        //        _windAvg_72.text = [NSString stringWithFormat:@"%@",avgwind];
-        
         _wave_72.text = [NSString stringWithFormat:@"%.2f-%.2fm",wavemin,wavemax];
-        //        _waveAvg_72.text = [NSString stringWithFormat:@"%@m",waveavg];
-        //        _waveDirection_72.text = dirwave;
+      
+        if (rootDic.count>4) {
+            NSNumber *avgwind = [rootDic[3] objectForKey:@"power"];
+            NSNumber *minwind = [rootDic[4] objectForKey:@"power"];
+            NSString *minlevel = [self level:minwind];
+            NSString *dirwind = [rootDic[4] objectForKey:@"dir"];
+            const char *windchars = [dirwind cStringUsingEncoding:NSUTF8StringEncoding];
+            NSString *windnew;
+            NSString *windnew2;
+            NSMutableArray *windarr = [[NSMutableArray alloc]init];
+            int windlen = strlen(windchars);
+            for (int i = 0; i < windlen; i++) {
+                windnew = [NSString stringWithFormat:@"%c",windchars[i]];
+                windnew2 = [self word:windnew];
+                [windarr addObject:windnew2];
+            }
+            NSLog(@"%d",windlen);
+            if (windlen == 3) {
+                NSLog(@"%@%@偏%@",windarr[2],windarr[1],windarr[0]);
+                _windDirection_72.text = [NSString stringWithFormat:@"%@%@偏%@",windarr[2],windarr[1],windarr[0]];
+            }else if(windlen == 2){
+                NSLog(@"%@偏%@",windarr[1],windarr[0]);
+                _windDirection_72.text = [NSString stringWithFormat:@"%@偏%@",windarr[1],windarr[0]];
+            }else if (windlen == 1){
+                NSLog(@"%@",windarr[0]);
+                _windDirection_72.text = [NSString stringWithFormat:@"%@",windarr[0]];
+            }
+            
+            
+            _wind_72.text = minlevel;
+            //        _windDirection_72.text = dirwind;
+            //        _windAvg_72.text = [NSString stringWithFormat:@"%@",avgwind];
+            
+            
+            //        _waveAvg_72.text = [NSString stringWithFormat:@"%@m",waveavg];
+            //        _waveDirection_72.text = dirwave;
+        }else{
+            _windDirection_72.text=@" ";
+            _wind_72.text=@" ";
+        }
         
         
     }];

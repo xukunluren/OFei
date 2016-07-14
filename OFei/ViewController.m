@@ -13,12 +13,16 @@
 #import "CCLocationManager.h"
 #import "OFeiCommon.h"
 #import "Reachability.h"
-
+#import "loginBg.h"
+#import "HRAccountTool.h"
+#import "AFNetworking.h"
 
 
 @interface ViewController ()<CLLocationManagerDelegate,MKReverseGeocoderDelegate>
 @property(nonatomic,strong)CLGeocoder *geocoder;
+@property (nonatomic, strong) Reachability *conn;
 
+@property(nonatomic,strong)loginBg *loginBg;
 @end
 
 @implementation ViewController
@@ -39,8 +43,12 @@
     NSString *_windD1;
     NSString *_date;
     NSMutableDictionary *_dictory;
-//    CLGeocoder *_geoCoder;
 
+
+    UITextField *pwd;
+
+    
+    
 }
 
 - (void)viewDidLoad {
@@ -57,16 +65,8 @@
     imageView1.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     [self.view addSubview:imageView1];
     
-    NSLog(@"你好");
-//    if ([CLLocationManager locationServicesEnabled]) {
-//        locationmanager = [[CLLocationManager alloc] init];
-//        [locationmanager setDelegate:self];
-//        [locationmanager startUpdatingLocation];
-//        [locationmanager requestWhenInUseAuthorization];
-//        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
-//            
-//            [locationmanager requestWhenInUseAuthorization];  //调用了这句,就会弹出允许框了.
-//    }
+//    NSLog(@"你好");
+
 
  
     [self setlogin];
@@ -91,8 +91,42 @@
 //    UIGraphicsEndImageContext();
     
     
-    [self setShou];
+//    [self setShou];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStateChange) name:kReachabilityChangedNotification object:nil];
+         self.conn = [Reachability reachabilityForInternetConnection];
+         [self.conn startNotifier];
     
+}
+- (void)dealloc
+{
+    [self.conn stopNotifier];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(void)networkStateChange{
+    [self checkNetworkState];
+}
+
+-(void)checkNetworkState{
+    // 1.检测wifi状态
+    Reachability *wifi = [Reachability reachabilityForLocalWiFi];
+//    Reachability *ggg= [Reachability ];
+    // 2.检测手机是否能上网络(WIFI\3G\2.5G)
+    Reachability *conn = [Reachability reachabilityForInternetConnection];
+    
+    // 3.判断网络状态
+    if ([wifi currentReachabilityStatus] != NotReachable) { // 有wifi
+        NSLog(@"有wifi");
+    
+        } else if ([conn currentReachabilityStatus] != NotReachable) {
+            // 没有使用wifi, 使用手机自带网络进行上网
+            NSLog(@"使用手机自带网络进行上网");
+            
+                } else { // 没有网络
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提醒" message:@"网络不可用，请检查网络状态！" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+                    [alert show];
+                    NSLog(@"没有网络");
+                }
 }
 
 -(void)setShou
@@ -125,86 +159,88 @@
     UIImageView *title = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width/2-150, Y*0.2, 300, 30)];
     //    [title.backgroundColor= [UIColor colorWithPatternImage:@"p1.png"]];
 //    [title setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ofei3.png"]]];
-    [title setImage:[UIImage imageNamed:@"ofei5"]];
+    [title setImage:[UIImage imageNamed:@"ofei"]];
     [self.view addSubview:title];
     UIImageView *Img =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"none.png"]];
     UIImageView *Img1 =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"none1.png"]];
     
+    _loginBg=[[loginBg alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height*0.35, self.view.frame.size.width-40, 100)];
+    [_loginBg setBackgroundColor:[UIColor whiteColor]];
+    [[_loginBg layer] setCornerRadius:5];
+    [[_loginBg layer] setMasksToBounds:YES];
+    [self.view addSubview:_loginBg];
+    
     //用户名
-    UITextField *name = [[UITextField alloc]initWithFrame:CGRectMake(X*0.5-100, Y*0.3, 200, 40)];
+//    _name = [[UITextField alloc]initWithFrame:CGRectMake(X*0.5-100, Y*0.35, 200, 45)];
+    _name=[[UITextField alloc]initWithFrame:CGRectMake(10, 0, self.view.frame.size.width-50, 50)];
     //    [name setBorderStyle:UITextBorderStyleRoundedRect];
     //设置上边圆角
-    UIBezierPath *maskPath1 = [UIBezierPath bezierPathWithRoundedRect:name.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
-    CAShapeLayer *maskLayer1= [[CAShapeLayer alloc]init];
-    maskLayer1.frame=name.bounds;
-    maskLayer1.path=maskPath1.CGPath;
-    name.layer.mask=maskLayer1;
-    [name setBorderStyle:UITextBorderStyleRoundedRect];
-    name.placeholder = @"  用户名";
+//    UIBezierPath *maskPath1 = [UIBezierPath bezierPathWithRoundedRect:name.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
+//    CAShapeLayer *maskLayer1= [[CAShapeLayer alloc]init];
+//    maskLayer1.frame=name.bounds;
+//    maskLayer1.path=maskPath1.CGPath;
+//    name.layer.mask=maskLayer1;
+//    [name setBorderStyle:UITextBorderStyleRoundedRect];
+    _name.placeholder = @" 用 户 名";
+    _name.layer.cornerRadius=5.0;
 //    name.text = @" ";
-    name.backgroundColor=[UIColor whiteColor];
-    name.autocapitalizationType = UITextAutocorrectionTypeNo;
-    name.clearButtonMode=UITextFieldViewModeWhileEditing;
-    name.returnKeyType=UIReturnKeyNext;
-    //设置左右图片
-    name.leftView=Img;
-    //    name.rightView=Img;
-    name.leftViewMode=UITextFieldViewModeAlways;
-
-    //    [name setDelegate:self];
-    [self.view addSubview:name];
     
+    _name.backgroundColor=[UIColor clearColor];
+    _name.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
+    
+    _name.clearButtonMode=UITextFieldViewModeWhileEditing;
+    _name.returnKeyType=UIReturnKeyNext;
+    _name.autocapitalizationType=UITextAutocapitalizationTypeAllCharacters;
+    //设置左右图片
+    _name.leftView=Img;
+    //    name.rightView=Img;
+    _name.leftViewMode=UITextFieldViewModeAlways;
+    _name.clearsOnBeginEditing = YES;
+    //    [name setDelegate:self];
+//    [self.view addSubview:name];
+    [_loginBg addSubview:_name];
     
     //密码
-    UITextField *pwd = [[UITextField alloc]initWithFrame:CGRectMake(X*0.5-100, Y*0.3+40, 200, 40)];
+//   pwd = [[UITextField alloc]initWithFrame:CGRectMake(X*0.5-100, Y*0.45, 200, 45)];
+    pwd=[[UITextField alloc]initWithFrame:CGRectMake(10, 50, self.view.frame.size.width-50, 50)];
     //    [pwd setBorderStyle:UITextBorderStyleRoundedRect];
-    pwd.placeholder = @"  密    码";
+    pwd.placeholder = @" 密     码";
+    pwd.layer.cornerRadius=5.0;
     //设置下面圆角
-    UIBezierPath *maskPath2 = [UIBezierPath bezierPathWithRoundedRect:pwd.bounds byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight cornerRadii:CGSizeMake(5, 5)];
-    CAShapeLayer *maskLayer2= [[CAShapeLayer alloc]init];
-    maskLayer2.frame=pwd.bounds;
-    maskLayer2.path=maskPath2.CGPath;
-    pwd.layer.mask=maskLayer2;
-    [pwd setBorderStyle:UITextBorderStyleRoundedRect];
+//    UIBezierPath *maskPath2 = [UIBezierPath bezierPathWithRoundedRect:pwd.bounds byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight cornerRadii:CGSizeMake(5, 5)];
+//    CAShapeLayer *maskLayer2= [[CAShapeLayer alloc]init];
+//    maskLayer2.frame=pwd.bounds;
+//    maskLayer2.path=maskPath2.CGPath;
+//    pwd.layer.mask=maskLayer2;
+//    [pwd setBorderStyle:UITextBorderStyleRoundedRect];
     //设置左右图片
     pwd.leftView=Img1;
     pwd.leftViewMode=UITextFieldViewModeAlways;
-
-    pwd.backgroundColor=[UIColor whiteColor];
+    pwd.clearsOnBeginEditing = YES;
+    pwd.backgroundColor=[UIColor clearColor];
     pwd.autocapitalizationType = UITextAutocorrectionTypeNo;
     pwd.clearButtonMode=UITextFieldViewModeWhileEditing;
     pwd.returnKeyType=UIReturnKeySend;
+    
+    pwd.clearButtonMode = UITextFieldViewModeWhileEditing;
 //    pwd.text = @" ";
     //    pwd.keyboardType=UIKeyboardTypeDefault;
     pwd.secureTextEntry=YES;
-    [self.view addSubview:pwd];
+    [_loginBg addSubview:pwd];
+//    [self.view addSubview:pwd];
     
     UIButton *button = [[UIButton alloc]init];
     button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     button.layer.cornerRadius=5.0;
-    [button setFrame:CGRectMake(X*0.5-100, Y*0.5, 200, 40)];
-    [button setTitle:@"登   录" forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [button setBackgroundColor:[UIColor whiteColor]];
+//    [button setFrame:CGRectMake(X*0.5-150, Y*0.55, 300, 45)];
+    [button setFrame:CGRectMake(20, self.view.frame.size.height*0.55, self.view.frame.size.width-40, 50)];
+    [button setTitle:@"登     录" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor colorWithRed:103/255.0 green:201/255.0 blue:255/255.0 alpha:1]];
     [button addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.view addSubview:button];
     
-    //横线
-//    UIImageView *imageView=[[UIImageView alloc] initWithFrame:self.view.frame];
-//    [self.view addSubview:imageView];
-//    UIGraphicsBeginImageContext(imageView.frame.size);
-//    [imageView.image drawInRect:CGRectMake(0, 0, imageView.frame.size.width, imageView.frame.size.height)];
-//    CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-//    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 0.2);
-//    CGContextSetAllowsAntialiasing(UIGraphicsGetCurrentContext(), YES);
-//    //    CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 1, 0, 0);
-//    [[UIColor grayColor]setStroke];
-//    CGContextBeginPath(UIGraphicsGetCurrentContext());
-//    CGContextMoveToPoint(UIGraphicsGetCurrentContext(), X*0.2+3, Y*0.3+39);
-//    CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), X*0.2+197, Y*0.3+39);
-//    CGContextStrokePath(UIGraphicsGetCurrentContext());
-//    imageView.image=UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
 
 }
 
@@ -250,35 +286,6 @@
 //}
 
 
-
-
-//获取天气信息
--(void)getWeatherData:(NSString *)location
-{
-    //    NSLog(@"%@",location);
-    NSString *city = [location substringToIndex:2];
-    
-    NSLog(@"%@",city);
-    if(city.length == 0){
-    city = @"上海";
-    }
-    //第一步，创建url
-    NSString * URLString1 = @"http://api.lib360.net/open/weather.json?city=";
-    NSString *URLString = [NSString stringWithFormat:@"%@%@",URLString1,city];
-    NSURL * URL = [NSURL URLWithString:[URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    //    NSURL * URL = [NSURL URLWithString:URLString];
-    
-    NSLog(@"%@",URL);
-    
-    //    NSURL *url = [NSURL URLWithString:@"http://api.lib360.net/open/weather.json?city=苏州"];
-    //第二步，创建请求
-    NSURLRequest *request = [[NSURLRequest alloc]initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
-    //第三步，连接服务器
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    
-        [connection start];
-}
-
 #pragma 获取天气信息的代理方法
 //接收到服务器回应的时候调用此方法
 //接受到respone,这里面包含了HTTP请求状态码和数据头信息，包括数据长度、编码格式等
@@ -299,7 +306,7 @@
     _weatherDictory = [NSJSONSerialization JSONObjectWithData:_backData options:NSJSONReadingMutableContainers error:nil];
     //    NSLog(@"霓虹%@",_weatherDictory);
     //data、datanow\pm25
-    [self weatherDataAnalysis:_weatherDictory];
+//    [self weatherDataAnalysis:_weatherDictory];
     //    NSLog(@"")
 }
 //网络请求过程中，出现任何错误（断网，连接超时等）会进入此方法
@@ -312,66 +319,66 @@
 
 
 #pragma 天气数据解析
--(void)weatherDataAnalysis:(NSDictionary *)weatherData
-{
-    NSArray *weatherArray = [weatherData objectForKey:@"data"];
-    NSLog(@"%@",weatherArray.firstObject);
-    NSDictionary *datanow = weatherArray.firstObject;
-    NSDictionary *datanow1 = [weatherData objectForKey:@"datanow"];
-    NSNumber *pm1 = [weatherData objectForKey:@"pm25"];
-    
-    NSString *pm = pm1.description;
-
-    NSString *weather = [datanow objectForKey:@"Weather"];
-    
-    NSString *tempMax = [datanow objectForKey:@"TempMax"];
-    NSString *tempMin = [datanow objectForKey:@"TempMin"];
-    NSString *wind = [datanow objectForKey:@"Wind"];
-    NSString *windD = [datanow objectForKey:@"WindB"];
-    NSString *windD1 = [datanow1 objectForKey:@"Wind"];
-    NSString *date = [datanow objectForKey:@"Date"];
-    NSLog(@"%@==%@==%@==%@==%@==%@==%@",pm,weather,tempMax,tempMin,wind,windD,date);
-    if (tempMax!=nil&&tempMin!=nil) {
-        NSString *zhi = @" ~ ";
-        NSString *du = @"℃";
-        NSString *temp = [NSString stringWithFormat:@"%@%@%@%@",tempMin,zhi,tempMax,du];
-        _temp = temp;
-    }
-    if (weather!=nil) {
-        NSLog(@"%@",weather);
-        _weather = weather;
-    }
-    if (wind!=nil&&windD!=nil) {
-        if (windD.length<2) {
-            _windD = windD1;
-        }else{
-            _windD = windD;
-        }
-        _wind = wind;
-    }
-    if (_title!=nil&&date!=nil) {
-        
-        NSString *xinxi = [NSString stringWithFormat:@"%@%@",_title,date];
-        _date = xinxi;
-    }
-    if (pm!=nil) {
-        _pm = pm;
-    }
-    _dictory = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-    [dictionary setObject:_weather forKey:@"1"];
-    [dictionary setObject:_temp forKey:@"2"];
-    [dictionary setObject:_windD forKey:@"3"];
-    [dictionary setObject:_wind forKey:@"4"];
-    [dictionary setObject:_pm forKey:@"5"];
-    [dictionary setObject:_title forKey:@"6"];
-    [dictionary setObject:_date forKey:@"7"];
-    _dictory = dictionary;
-    
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"test" object:_dictory];
-
-
-}
+//-(void)weatherDataAnalysis:(NSDictionary *)weatherData
+//{
+//    NSArray *weatherArray = [weatherData objectForKey:@"data"];
+//    NSLog(@"%@",weatherArray.firstObject);
+//    NSDictionary *datanow = weatherArray.firstObject;
+//    NSDictionary *datanow1 = [weatherData objectForKey:@"datanow"];
+//    NSNumber *pm1 = [weatherData objectForKey:@"pm25"];
+//    
+//    NSString *pm = pm1.description;
+//
+//    NSString *weather = [datanow objectForKey:@"Weather"];
+//    
+//    NSString *tempMax = [datanow objectForKey:@"TempMax"];
+//    NSString *tempMin = [datanow objectForKey:@"TempMin"];
+//    NSString *wind = [datanow objectForKey:@"Wind"];
+//    NSString *windD = [datanow objectForKey:@"WindB"];
+//    NSString *windD1 = [datanow1 objectForKey:@"Wind"];
+//    NSString *date = [datanow objectForKey:@"Date"];
+//    NSLog(@"%@==%@==%@==%@==%@==%@==%@",pm,weather,tempMax,tempMin,wind,windD,date);
+//    if (tempMax!=nil&&tempMin!=nil) {
+//        NSString *zhi = @" ~ ";
+//        NSString *du = @"℃";
+//        NSString *temp = [NSString stringWithFormat:@"%@%@%@%@",tempMin,zhi,tempMax,du];
+//        _temp = temp;
+//    }
+//    if (weather!=nil) {
+//        NSLog(@"%@",weather);
+//        _weather = weather;
+//    }
+//    if (wind!=nil&&windD!=nil) {
+//        if (windD.length<2) {
+//            _windD = windD1;
+//        }else{
+//            _windD = windD;
+//        }
+//        _wind = wind;
+//    }
+//    if (_title!=nil&&date!=nil) {
+//        
+//        NSString *xinxi = [NSString stringWithFormat:@"%@%@",_title,date];
+//        _date = xinxi;
+//    }
+//    if (pm!=nil) {
+//        _pm = pm;
+//    }
+//    _dictory = [[NSMutableDictionary alloc] init];
+//    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+//    [dictionary setObject:_weather forKey:@"1"];
+//    [dictionary setObject:_temp forKey:@"2"];
+//    [dictionary setObject:_windD forKey:@"3"];
+//    [dictionary setObject:_wind forKey:@"4"];
+//    [dictionary setObject:_pm forKey:@"5"];
+//    [dictionary setObject:_title forKey:@"6"];
+//    [dictionary setObject:_date forKey:@"7"];
+//    _dictory = dictionary;
+//    
+//    [[NSNotificationCenter defaultCenter]postNotificationName:@"test" object:_dictory];
+//
+//
+//}
 
 
 
@@ -382,16 +389,65 @@
     // Dispose of any resources that can be recreated.
 }
 -(void)login{
-    normal = [[NormalViewController alloc] initWithNibName:nil bundle:nil];
-    UINavigationController *normalView = [[UINavigationController alloc] initWithRootViewController:normal];
-    self.delegate = normal;
-    //    [self.navigationController pushViewController:normal animated:true];
     
-    [self presentViewController:normalView animated:YES completion:^{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"test" object:_dictory];
-    }];
+    NSString *username=[_name.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString *password=[pwd.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    [self.view endEditing:YES];
+    
+    //等下打开
+    if (!username.length || !password.length) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提醒" message:@"用户名或密码为空" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+        [alert show];
+    }else{
+        [self loginWithUsername:username Password:password];
+    }
+    
+    
+}
 
+-(void)loginWithUsername:(NSString *)userN Password:(NSString *)passW
+{
+    
+    NSURL *url=[NSURL URLWithString:userLogin];
+    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:url];
+    request.timeoutInterval=5.0;
+    request.HTTPMethod=@"POST";
+    
+    NSString *param=[NSString stringWithFormat:@"username=%@&password=%@",_name.text,pwd.text];
 
+    request.HTTPBody=[param dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+
+    NSString *str = [[NSString alloc]initWithData:received encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"%@",str);
+    
+//    记得要改_name.text
+    if ([str isEqualToString:_name.text]) {
+        normal = [[NormalViewController alloc] initWithNibName:nil bundle:nil];
+        
+        UINavigationController *normalView = [[UINavigationController alloc] initWithRootViewController:normal];
+        self.delegate = normal;
+        
+        self.view.window.rootViewController= normalView;
+        _array=[NSArray arrayWithObjects:_name.text,pwd.text, nil];
+        [HRAccountTool saveAccount:_array];
+        
+        [self presentViewController:normalView animated:YES completion:^{
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"test" object:_dictory];
+        }];
+    }
+    else if ([str isEqualToString:@"null"]){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提醒" message:@"用户名或密码错误，请重新输入！" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+        [alert show];
+    }else{
+        self.view.window.rootViewController=[[ViewController alloc]init];
+    }
+    
+    
+    
+    
 }
 
 

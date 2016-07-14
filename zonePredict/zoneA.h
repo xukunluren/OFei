@@ -39,6 +39,8 @@
 @property(strong,nonatomic)NSString *title;
 @property(strong,nonatomic)UINavigationController *navigationCtrl;
 
+@property(strong,nonatomic)UILabel *releaseTime;
+
 - (NSString *)word:(NSString *)dirdir;
 
 @end

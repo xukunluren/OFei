@@ -54,6 +54,9 @@
     NSString *_publishTime;
     
     UILabel *detail;
+    
+    UILabel *releaseTime;
+    //NSString *pubtime2;
 }
 
 
@@ -228,9 +231,10 @@
 //        [self setMapView:_title];
         [self judgePoint:_point];
         [self.flowTable reloadData];
-        NSArray *dateArray1 = [self getDataFromNet:_title];
+        [self getDataFromNet:_title];
+        //NSArray *dateArray1 = [self getDataFromNet:_title];
 //        NSLog(@"%@",dateArray1);
-        [self setXY:dateArray1];
+        //[self setXY:dateArray1];
         detail.text = @" ";
         _indexOfSymbol = 200;
         [graph reloadData];
@@ -414,44 +418,26 @@
         NSMutableArray *dateArray = [[NSMutableArray alloc] init];
         NSMutableArray *windHighArray = [[NSMutableArray alloc] init];
         NSMutableArray *windDirection = [[NSMutableArray alloc] init];
-//        for (NSDictionary *dic in array) {
-//            
-//            
-//            NSString *dateString1 = [dic objectForKey:@"dataTime"];
-//            NSString *dateString = [self stringForAnaly:dateString1];
-//            NSNumber *windhigh1 = [dic objectForKey:@"POWER"];
-//            CGFloat windhigh2 = [windhigh1 doubleValue];
-////            NSInteger windssss1 = [windhigh1 doubleValue];
-//            NSString *windhigh = [NSString stringWithFormat:@"%.2f",windhigh2];
-//            //            NSLog(@"进度进度精度%@ == %ld===%@",windspeed1,(long)windssss,windspeed);
-//            NSNumber *winddir = [dic objectForKey:@"DIR"];
-////            NSInteger windddd = [winddir doubleValue];
-//            NSString *windDirecion = winddir.description;
-//            
-//            
-//            
-//            [dateArray addObject:dateString];
-//            [windHighArray addObject:windhigh];
-//            [windDirection addObject:windDirecion];
-//            
-//        }
+
         
-        NSString *pubtime = [array[0] objectForKey:@"PUBLISHTIME"];
+        NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+        NSString *pubtime2=[pubtime substringToIndex:16];
+        releaseTime.text=[NSString stringWithFormat:@"发布时间:%@",pubtime2];
         NSString *pubtime1 = [pubtime substringToIndex:10];
         for (int i = 0; i<array.count; i++) {
-            NSString *publishtime = [array[i] objectForKey:@"PUBLISHTIME"];
+            NSString *publishtime = [array[i] objectForKey:@"publishtime"];
             NSString *publishtime1 = [publishtime substringToIndex:10];
             if ([publishtime1 isEqualToString:pubtime1]) {
                 
                 
-                NSString *dateString1 = [array[i] objectForKey:@"dataTime"];
+                NSString *dateString1 = [array[i] objectForKey:@"datatime"];
                 NSString *dateString = [self stringForAnaly:dateString1];
-                NSNumber *windhigh1 = [array[i] objectForKey:@"POWER"];
+                NSNumber *windhigh1 = [array[i] objectForKey:@"power"];
                 CGFloat windhigh2 = [windhigh1 doubleValue];
                 //            NSInteger windssss1 = [windhigh1 doubleValue];
                 NSString *windhigh = [NSString stringWithFormat:@"%.2f",windhigh2];
                 //            NSLog(@"进度进度精度%@ == %ld===%@",windspeed1,(long)windssss,windspeed);
-                NSNumber *winddir = [array[i] objectForKey:@"DIR"];
+                NSNumber *winddir = [array[i] objectForKey:@"dir"];
                 //            NSInteger windddd = [winddir doubleValue];
                 NSString *windDirecion = winddir.description;
                 
@@ -527,13 +513,13 @@
     [self.view addSubview:_hostView];
     
     //设置留白
-    graph.paddingLeft = 10;
-    graph.paddingTop = 10;
-    graph.paddingRight = 0;
-    graph.paddingBottom = 20;
+    graph.paddingLeft = 3;
+    graph.paddingTop = 20;
+    graph.paddingRight = 3;
+    graph.paddingBottom = 10;
     
     graph.plotAreaFrame.paddingLeft = 30.0;
-    graph.plotAreaFrame.paddingTop = 10.0;
+    graph.plotAreaFrame.paddingTop = 20.0;
     graph.plotAreaFrame.paddingRight = 5.0;
     graph.plotAreaFrame.paddingBottom = 20.0;
     //设置坐标范围
@@ -541,7 +527,7 @@
     plotSpace.allowsUserInteraction = YES;
     //允许用户交互
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(0.0)   lengthDecimal:CPTDecimalFromFloat(15.0)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(0.0) lengthDecimal:CPTDecimalFromFloat(1.0)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(0.0) lengthDecimal:CPTDecimalFromFloat(1.5)];
     plotSpace.delegate = self;
     plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:@(0) length:@(80)];
     
@@ -553,7 +539,7 @@
     _flowTable.layer.masksToBounds = YES;
     _flowTable.alpha = 0.6;
     [_flowTable setDelegate:self];
-    _flowTable.backgroundColor = [UIColor redColor];
+    _flowTable.backgroundColor = [UIColor clearColor];
     
     [_flowTable setDataSource:self];
     [self.view addSubview:_flowTable];
@@ -662,11 +648,11 @@
     
     y.majorIntervalLength = @(0.2);
     y.orthogonalPosition = @(0);
-    y.titleLocation = @(100.f);
-    y.titleOffset = 30.f;
+    y.titleLocation = @(1.5);
+    y.titleOffset = 0.f;
     //坐标原点：0
-    
-    y.title= @"数值";
+    y.titleRotation=2*M_PI;
+    y.title= @"m/s";
     //    y.labelingPolicy = CPTAxisLabelingPolicyNone;
     //固定XY轴的显示位置，使其不随屏幕的滑动而移动
     axisSet.yAxis.axisConstraints = [CPTConstraints constraintWithRelativeOffset:0.0];
@@ -702,8 +688,7 @@
     NSLog(@"url是===%@",url);
     //第一步，创建URL
     
-    
-    
+  
     //第二步，通过URL创建网络请求
     
     NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
@@ -721,40 +706,18 @@
     [_windDirForTu removeAllObjects];
     [datasForPlot removeAllObjects];
     [_dataJQ removeAllObjects];
-//    for (NSDictionary *dic in array) {
-//        
-//        
-//        NSString *dateString1 = [dic objectForKey:@"dataTime"];
-//        NSString *dateString = [_datAnaly stringForAnaly:dateString1];
-//        
-//        
-//        NSNumber *windspeed = [dic objectForKey:@"POWER"];
-//        
-//        
-//        NSNumber *winddir = [dic objectForKey:@"DIR"];
-//        NSString *windDirecion =[_datAnaly judgeDirectionPower:winddir];
-//        
-//        
-//        [_windDirForTu addObject:windDirecion];
-//        
-//        [datasForPlot addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:dateString,@"date",windspeed,@"speed",windDirecion,@"direct", nil]];
-//        
-//        
-//        [_datetimeArray addObject:dateString];
-//        [_valueArray addObject:windspeed];
-//        
-//        
-//    }
+
     
-    NSString *pubtime = [array[0] objectForKey:@"PUBLISHTIME"];
+    NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+
     NSString *pubtime1 = [pubtime substringToIndex:10];
     _publishTime = pubtime1;
     for (int i = 0; i<array.count; i++) {
-        NSString *publishtime = [array[i] objectForKey:@"PUBLISHTIME"];
+        NSString *publishtime = [array[i] objectForKey:@"publishtime"];
         NSString *publishtime1 = [publishtime substringToIndex:10];
         if ([publishtime1 isEqualToString:pubtime1]) {
             
-            NSString *dateString1 = [array[i] objectForKey:@"dataTime"];
+            NSString *dateString1 = [array[i] objectForKey:@"datatime"];
             NSString *jiequ = [dateString1 substringToIndex:10];
             if ([jiequ isEqualToString:publishtime1]) {
                 [_similarLength addObject:jiequ];
@@ -762,10 +725,10 @@
             NSString *dateString = [_datAnaly stringForAnaly:dateString1];
             
             
-            NSNumber *windspeed = [array[i] objectForKey:@"POWER"];
+            NSNumber *windspeed = [array[i] objectForKey:@"power"];
             
             
-            NSNumber *winddir = [array[i] objectForKey:@"DIR"];
+            NSNumber *winddir = [array[i] objectForKey:@"dir"];
             NSString *windDirecion =[_datAnaly judgeDirectionPower:winddir];
             
             
@@ -827,8 +790,9 @@
     logo.image=[UIImage imageNamed:@"LOGO.png"];
     [self.view addSubview:logo];
     
-    UILabel *releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.2 , 200, 100)];
-    releaseTime.text = @"发布时间:2015-11-16 09:00";
+    releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.2 , 200, 100)];
+    //releaseTime.text = @"发布时间:2015-11-16 09:00";
+    
     releaseTime.font = [UIFont fontWithName:@"TimesNewRomanPS-ItalicMT" size:14];
     [self.view addSubview:releaseTime];
     

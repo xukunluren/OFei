@@ -15,7 +15,7 @@
     const size_t height           = 50;
     const size_t bitsPerComponent = 8;
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 #else
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
@@ -82,14 +82,14 @@
 
     XCTAssertEqualObjects([NSDecimalNumber decimalNumberWithString:@"100"], [NSDecimalNumber decimalNumberWithDecimal:CPTDecimalFromInteger(i)], @"NSInteger to NSDecimal conversion failed");
     XCTAssertEqualObjects([NSDecimalNumber decimalNumberWithString:@"100"], [NSDecimalNumber decimalNumberWithDecimal:CPTDecimalFromUnsignedInteger(unsignedI)], @"NSUInteger to NSDecimal conversion failed");
-    XCTAssertEqualWithAccuracy([@(f)floatValue], [[NSDecimalNumber decimalNumberWithDecimal:CPTDecimalFromFloat(f)] floatValue], 1.0e-7, @"float to NSDecimal conversion failed");
+    XCTAssertEqualWithAccuracy([@(f)floatValue], [[NSDecimalNumber decimalNumberWithDecimal:CPTDecimalFromFloat(f)] floatValue], 1.0e-7f, @"float to NSDecimal conversion failed");
     XCTAssertEqualObjects(@(d), [NSDecimalNumber decimalNumberWithDecimal:CPTDecimalFromDouble(d)], @"double to NSDecimal conversion failed.");
 }
 
 -(void)testConvertNegativeOne
 {
-    NSDecimal zero = [[NSDecimalNumber zero] decimalValue];
-    NSDecimal one  = [[NSDecimalNumber one] decimalValue];
+    NSDecimal zero = [NSDecimalNumber zero].decimalValue;
+    NSDecimal one  = [NSDecimalNumber one].decimalValue;
     NSDecimal negativeOne;
 
     NSDecimalSubtract(&negativeOne, &zero, &one, NSRoundPlain);
@@ -127,7 +127,7 @@
 
 -(void)testCachedZero
 {
-    NSDecimal zero = [[NSDecimalNumber zero] decimalValue];
+    NSDecimal zero = [NSDecimalNumber zero].decimalValue;
     NSDecimal testValue;
     NSString *errMessage;
 
@@ -184,7 +184,7 @@
 
 -(void)testCachedOne
 {
-    NSDecimal one = [[NSDecimalNumber one] decimalValue];
+    NSDecimal one = [NSDecimalNumber one].decimalValue;
     NSDecimal testValue;
     NSString *errMessage;
 
@@ -609,7 +609,7 @@
 
 /// @cond
 
--(void)setContext:(CGContextRef)newContext
+-(void)setContext:(nonnull CGContextRef)newContext
 {
     if ( context != newContext ) {
         CGContextRetain(newContext);

@@ -12,6 +12,7 @@
 #import "PellTableViewSelect.h"
 #import "warmViewController.h"
 #import <ArcGIS/ArcGIS.h>
+#import "NormalViewController.h"
 
 @interface WarnInformationViewController ()<AGSWebMapDelegate,AGSMapViewLayerDelegate,AGSLayerDelegate>
 
@@ -21,6 +22,8 @@
 {
  MKMapView *_mapView;
     NSString *_title;
+    
+    NormalViewController *normal;
 }
 
 #pragma mark - 视图将要出现
@@ -112,9 +115,11 @@
     //    UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:normal];
     //    [self presentViewController:navi animated:YES completion:^{
     //    }];
-    
+    normal=[[NormalViewController alloc]init];
+    normal.dotImage.hidden=YES;
     [self dismissViewControllerAnimated:YES completion:^{
         
+       
         
     }];
     //    [self.navigationController popToRootViewControllerAnimated:YES];

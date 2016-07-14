@@ -100,7 +100,7 @@
     [_waveGraph backwithTitle:_title];
     _waveGraph.backgroundColor = [UIColor clearColor];
     _waveGraph.alpha = 0.6;
-    _waveGraph.frame = CGRectMake(0, 60+KHight/3.5, KWight, KHight/4);
+    _waveGraph.frame = CGRectMake(0, 60+KHight/3.8, KWight, KHight/3.8);
     _waveGraph.layer.cornerRadius = 10;
     [self.view addSubview:_waveGraph];
     
@@ -108,7 +108,7 @@
     [_flowGraph backwithTitle:_title];
     _flowGraph.backgroundColor = [UIColor clearColor];
     _flowGraph.alpha = 0.6;
-    _flowGraph.frame = CGRectMake(0, 70+2*(KHight/3.8), KWight, KHight/4);
+    _flowGraph.frame = CGRectMake(0, 70+2*(KHight/3.8), KWight, KHight/3.8);
     _flowGraph.layer.cornerRadius = 10;
     [self.view addSubview:_flowGraph];
 }

@@ -294,10 +294,10 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
     self.webView.scalesPageToFit = YES;
     self.webView.contentMode = UIViewContentModeRedraw;
     self.webView.opaque = YES;
-//     [self.webView loadHTMLString:@"<a>浙江水利厅</a>" baseURL:nil];
+//     [self.webView loadHTMLString:@"<a href="http://www.zjwater.gov.cn" target="_blank">浙江省水利厅</a>" baseURL:nil];
     [self.view addSubview:self.webView];
     UILabel *shou = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height*0.87, self.view.frame.size.width*0.3, self.view.frame.size.height*0.045)];
-    shou.text = @"   ©上海海洋大学";
+    shou.text = @"   ©东海预报中心";
     shou.font = [UIFont systemFontOfSize:9.0f];
     shou.textAlignment = NSTextAlignmentLeft;
     shou.tintColor = [UIColor blueColor];
@@ -751,7 +751,7 @@ static const float kAfterInteractiveMaxProgressValue    = 0.9f;
 {
     [self handleLoadRequestCompletion];
     [self refreshButtonsState];
-//    [webView loadHTMLString:@"<a>浙江水利厅</a>" baseURL:nil];
+//    [webView loadHTMLString:@"<a>浙江省水利厅</a>" baseURL:nil];
     //see if we can set the proper page title at this point
     NSString *js_result = [webView stringByEvaluatingJavaScriptFromString:@"document.getElvementsByTagName('a')[2]"];
     self.title = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];

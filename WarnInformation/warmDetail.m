@@ -143,10 +143,10 @@ static NSString * const PASSWORD = @"56637190";
         //用于显示文档
         NSString  *path1 = NSHomeDirectory();
         NSLog(@"path:%@",path1);
-//        NSURL *url = [[NSURL fileURLWithPath:NSHomeDirectory()]  URLByAppendingPathComponent:@"Documents/你好222.doc"];
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"text.pdf" ofType:nil];
-        NSURL *url = [NSURL fileURLWithPath:path];
-        NSLog(@"url:%@",url);
+        NSURL *url = [[NSURL fileURLWithPath:NSHomeDirectory()]  URLByAppendingPathComponent:@"Documents/你好222.doc"];
+//        NSString *path = [[NSBundle mainBundle] pathForResource:@"text.pdf" ofType:nil];
+//        NSURL *url = [NSURL fileURLWithPath:path];
+//        NSLog(@"url:%@",url);
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         NSLog(@"request:%@",request);
         self.webView.scalesPageToFit=YES;

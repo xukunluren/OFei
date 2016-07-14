@@ -57,6 +57,8 @@
     CGPoint point;
     
     UILabel *detial;
+    
+    UILabel *releaseTime ;
 }
 
 
@@ -223,13 +225,13 @@
     _hostView.collapsesLayers = NO;
     [self.view addSubview:_hostView];
     //设置留白
-    graph.paddingLeft = 0;
-    graph.paddingTop = 10;
-    graph.paddingRight = 0;
-    graph.paddingBottom = 5;
+    graph.paddingLeft = 3;
+    graph.paddingTop = 20;
+    graph.paddingRight = 3;
+    graph.paddingBottom = 10;
     
-    graph.plotAreaFrame.paddingLeft = 35.0;
-    graph.plotAreaFrame.paddingTop = 10.0;
+    graph.plotAreaFrame.paddingLeft = 30.0;
+    graph.plotAreaFrame.paddingTop = 20.0;
     graph.plotAreaFrame.paddingRight = 5.0;
     graph.plotAreaFrame.paddingBottom = 20.0;
     //设置坐标范围
@@ -239,7 +241,7 @@
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(0.0)   lengthDecimal:CPTDecimalFromFloat(20.0)];
 //    plotSpace.yRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(-3.0) lengthDecimal:CPTDecimalFromFloat(3.0)];
     plotSpace.delegate = self;
-    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(-3.0) lengthDecimal:CPTDecimalFromFloat(3.0)];
+    plotSpace.globalYRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(-5.0) lengthDecimal:CPTDecimalFromFloat(5.0)];
      plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocationDecimal:CPTDecimalFromFloat(0.0) lengthDecimal:CPTDecimalFromFloat(50.0)];
 //    plotSpace.globalXRange = [CPTPlotRange plotRangeWithLocationDecimal];
 //    NSLog(@"%@",dateArray1);
@@ -287,8 +289,8 @@
     logo.image=[UIImage imageNamed:@"LOGO.png"];
     [self.view addSubview:logo];
     
-    UILabel *releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.2 , 200, 100)];
-    releaseTime.text = @"发布时间:2015-11-16 09:00";
+    releaseTime = [[UILabel alloc]initWithFrame:CGRectMake(KWight*0.05, KHight*0.2 , 200, 100)];
+    //releaseTime.text = @"发布时间:2015-11-16 09:00";
     releaseTime.font = [UIFont fontWithName:@"TimesNewRomanPS-ItalicMT" size:14];
     [self.view addSubview:releaseTime];
     
@@ -396,25 +398,27 @@
 //        
 //    }
     
-    NSString *pubtime = [array[0] objectForKey:@"PUBLISHTIME"];
+    NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+   
+    
     NSString *pubtime1 = [pubtime substringToIndex:10];
     _publishTime = pubtime1;
     
     
     for (int i = 0; i<array.count; i++) {
-        NSString *publishtime = [array[i] objectForKey:@"PUBLISHTIME"];
+        NSString *publishtime = [array[i] objectForKey:@"publishtime"];
         NSString *publishtime1 = [publishtime substringToIndex:10];
-        NSString *varname = [array[i] objectForKey:@"VARNAME"];
+        NSString *varname = [array[i] objectForKey:@"varname"];
         if ([publishtime1 isEqualToString:pubtime1]&&[varname isEqualToString:@"TIDE"]) {
             
-            NSString *dateString1 = [array[i] objectForKey:@"dataTime"];
+            NSString *dateString1 = [array[i] objectForKey:@"datatime"];
             NSString *jiequ = [dateString1 substringToIndex:10];
             if ([jiequ isEqualToString:publishtime1]) {
                 [_similarLength addObject:jiequ];
             }
             NSString *dateString = [_datAnaly stringForAnaly:dateString1];
             
-            NSNumber *tideHigh = [array[i] objectForKey:@"POWER"];
+            NSNumber *tideHigh = [array[i] objectForKey:@"power"];
             CGFloat tideHigh1 = [tideHigh doubleValue];
             NSString *tideHigh2 = [NSString stringWithFormat:@"%.2f",tideHigh1];
             
@@ -697,11 +701,11 @@
     
     y.majorIntervalLength = @(1.0);
     y.orthogonalPosition = @(0);
-    y.titleLocation = @(100.f);
-    y.titleOffset = -10.f;
+    y.titleLocation = @(3.3);
+    y.titleOffset = 0.f;
     //坐标原点：0
-    
-    y.title= @"数值";
+    y.titleRotation=2*M_PI;
+    y.title= @"m";
     //    y.labelingPolicy = CPTAxisLabelingPolicyNone;
     //固定XY轴的显示位置，使其不随屏幕的滑动而移动
     axisSet.yAxis.axisConstraints = [CPTConstraints constraintWithRelativeOffset:0.0];
@@ -873,8 +877,9 @@
         [self judgeRoutes:_title];
         [_tidePositionTable reloadData];
         [self getDataFromNet:_title];
-        NSArray *dateArray1 = [self  getDataFromNet:_title];
-        [self setXY:dateArray1];
+        
+        //NSArray *dateArray1 = [self  getDataFromNet:_title];
+        //[self setXY:dateArray1];
         detial.text = @" ";
         _indexOfSymbol = 200;
         [graph reloadData];
@@ -1251,11 +1256,15 @@
         NSMutableArray *dataTime = [[NSMutableArray alloc] init];
         NSMutableArray *tideHigh = [[NSMutableArray alloc] init];
         
+        NSString *pubtime = [array[0] objectForKey:@"publishtime"];
+        NSString *pubtime2=[pubtime substringToIndex:16];
+        releaseTime.text=[NSString stringWithFormat:@"发布时间:%@",pubtime2];
+        
         for (NSDictionary *dic in array) {
-            NSString *dateString1 = [dic objectForKey:@"dataTime"];
+            NSString *dateString1 = [dic objectForKey:@"datatime"];
             NSString *dateString = [self stringForAnaly:dateString1];
             
-            NSString *tideString1 = [dic objectForKey:@"POWER"];
+            NSString *tideString1 = [dic objectForKey:@"power"];
             CGFloat tideString2 = [tideString1 doubleValue];
             NSString *tideString = [NSString stringWithFormat:@"%.2f",tideString2];
             

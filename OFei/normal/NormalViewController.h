@@ -18,6 +18,8 @@
 
 @property(nonatomic,strong)UIView *showData;
 
+@property(nonatomic,strong)UIImageView *dotImage;
+
 -(void)setNavTitle:(NSString*)text;
 
 @end

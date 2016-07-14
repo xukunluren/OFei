@@ -106,13 +106,13 @@
     [self addSubview:_hostView];
     
     //设置留白
-    graph.paddingLeft = 0;
-    graph.paddingTop = 10;
-    graph.paddingRight = 0;
+    graph.paddingLeft = 3;
+    graph.paddingTop = 20;
+    graph.paddingRight = 3;
     graph.paddingBottom = 5;
     
-    graph.plotAreaFrame.paddingLeft = 35.0;
-    graph.plotAreaFrame.paddingTop = 10.0;
+    graph.plotAreaFrame.paddingLeft = 30.0;
+    graph.plotAreaFrame.paddingTop = 20.0;
     graph.plotAreaFrame.paddingRight = 5.0;
     graph.plotAreaFrame.paddingBottom = 20.0;
     //设置坐标范围
@@ -163,20 +163,20 @@
         }
         
     }else{
-        NSString *pubtime = [array[0] objectForKey:@"PUBLISHTIME"];
+        NSString *pubtime = [array[0] objectForKey:@"publishtime"];
         NSString *pubtime1 = [pubtime substringToIndex:10];
         _publishTime = pubtime1;
         
         for (NSDictionary *dic in array) {
         
-        NSString *dateString1 = [dic objectForKey:@"dataTime"];
+        NSString *dateString1 = [dic objectForKey:@"datatime"];
         NSString *jiequ = [dateString1 substringToIndex:10];
         if ([jiequ isEqualToString:_publishTime]) {
                 [_similarLength addObject:jiequ];
             }
         NSString *dateString = [_dataAnaly stringForAnaly:dateString1];
-        NSNumber *windspeed = [dic objectForKey:@"POWER"];
-        NSNumber *flowdir = [dic objectForKey:@"DIR"];
+        NSNumber *windspeed = [dic objectForKey:@"power"];
+        NSNumber *flowdir = [dic objectForKey:@"dir"];
         NSString *flowDirection = [_dataAnaly judgeDirectionPower:flowdir];
         
         [_flowTimeArr addObject:dateString];
@@ -319,11 +319,11 @@
     
     y.majorIntervalLength = @(1.0);
     y.orthogonalPosition = @(0);
-    y.titleLocation = @(100.f);
-    y.titleOffset = -10.f;
+    y.titleLocation = @(2.3);
+    y.titleOffset = 0.f;
     //坐标原点：0
-    
-    y.title= @"数值";
+    y.titleRotation=2*M_PI;
+    y.title= @"m/s";
     //    y.labelingPolicy = CPTAxisLabelingPolicyNone;
     //固定XY轴的显示位置，使其不随屏幕的滑动而移动
     axisSet.yAxis.axisConstraints = [CPTConstraints constraintWithRelativeOffset:0.0];

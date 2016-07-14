@@ -270,13 +270,13 @@
       
             //数据解析部分，与更新数据库的代码有重复，可进一步精简------xk
             NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-            NSNumber *windid1 = [dic objectForKey:@"PNTID"];
+            NSNumber *windid1 = [dic objectForKey:@"pntid"];
             NSString *windid = [numberFormatter stringFromNumber:windid1];
-            NSNumber *winddirection1 = [dic objectForKey:@"DIR"];
+            NSNumber *winddirection1 = [dic objectForKey:@"dir"];
             NSString *winddirection = [numberFormatter stringFromNumber:winddirection1];
-            NSNumber *windpower1 = [dic objectForKey:@"POWER"];
+            NSNumber *windpower1 = [dic objectForKey:@"power"];
             NSString *windspeed = [numberFormatter stringFromNumber:windpower1];
-            NSString *date = [dic objectForKey:@"dataTime"];
+            NSString *date = [dic objectForKey:@"datatime"];
            NSString *windPower = [self getwindpower:windpower1];
             
         
@@ -302,11 +302,11 @@
       
             NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
             
-            NSNumber *windid1 = [dic objectForKey:@"PNTID"];
+            NSNumber *windid1 = [dic objectForKey:@"pntid"];
             NSString *windid = [numberFormatter stringFromNumber:windid1];
-            NSNumber *winddirection1 = [dic objectForKey:@"DIR"];
+            NSNumber *winddirection1 = [dic objectForKey:@"dir"];
             NSString *winddirection = [numberFormatter stringFromNumber:winddirection1];
-            NSNumber *windpower1 = [dic objectForKey:@"POWER"];
+            NSNumber *windpower1 = [dic objectForKey:@"power"];
             NSString *windspeed = [numberFormatter stringFromNumber:windpower1];
             NSString *date = [dic objectForKey:@"dataTime"];
             NSString *windpower = [self getwindpower:windpower1];

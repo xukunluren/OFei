@@ -284,14 +284,14 @@
         NSMutableArray *tideDTime = [[NSMutableArray alloc] init];
         NSMutableArray *tideDPosition = [[NSMutableArray alloc] init];
         for (NSDictionary *dic in array) {
-            NSString *varName = [dic objectForKey:@"VARNAME"];
+            NSString *varName = [dic objectForKey:@"varname"];
             if ([varName isEqualToString:@"TIDEDOWN"]) {
                 
                 
-                NSString *dateString1 = [dic objectForKey:@"dataTime"];
+                NSString *dateString1 = [dic objectForKey:@"datatime"];
                 NSString *dateString = [self stringForAnaly:dateString1].firstObject;
                 NSString *time = [self stringForAnaly:dateString1].lastObject;
-                NSNumber *tideD = [dic objectForKey:@"POWER"];
+                NSNumber *tideD = [dic objectForKey:@"power"];
                 CGFloat tide1 = [tideD doubleValue];
                 NSString *tideDown = [NSString stringWithFormat:@"%.2f",tide1];
                 
@@ -302,10 +302,10 @@
                 
                 
             }else{
-                NSString *dateString1 = [dic objectForKey:@"dataTime"];
+                NSString *dateString1 = [dic objectForKey:@"datatime"];
                 NSString *dateString = [self stringForAnaly:dateString1].firstObject;
                 NSString *time = [self stringForAnaly:dateString1].lastObject;
-                NSNumber *tideH1 = [dic objectForKey:@"POWER"];
+                NSNumber *tideH1 = [dic objectForKey:@"power"];
                 NSString *tideH = tideH1.description;
                 
                 
